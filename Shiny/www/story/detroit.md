@@ -1,0 +1,3 @@
+## Detroit
+
+The city of Detroit seems to be recovering from its [record-breaking](https://www.detroitnews.com/story/business/real-estate/2015/12/09/rent-detroit-harvard-study/77020532/) year of 2015. In comparison to other metro areas, the median rent prices for Detroit does not seem too high. Make no mistake, however, as despite city's [best efforts](https://www.freep.com/story/money/business/columnists/2016/10/21/detroit-midtown-incentives-rents/92526670/), the rent burden for Detroit is still hovering around [48%](https://www.rentcafe.com/blog/rental-market/real-estate-news/how-much-of-your-income-goes-to-rent/). The wages have so far seem to have kept up with the median rent increase, but it remains to be seen for how long that will be the case.

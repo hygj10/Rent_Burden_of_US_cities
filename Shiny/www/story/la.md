@@ -1,0 +1,3 @@
+## Los Angeles
+
+As of 2013, Los Angeles was the most rent-burdened city in the entire nation; 62% of the city’s renters spend more than 30% of their household income on rent each month. In fact, renters are having a hard time finding an affordable place to live anywhere in the greater Los Angeles region. The current median apartment rent in Los Angeles is about $3,000 - one of the highest in the country. [Source](https://www.kcet.org/shows/city-rising/rising-rent-burden-in-los-angeles).

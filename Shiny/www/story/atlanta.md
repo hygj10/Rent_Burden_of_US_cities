@@ -1,0 +1,3 @@
+## Atlanta
+
+The ratio of Atlanta's rent burdened residents seems to have increased very quickly until 2014, when it started to drop rapidly. The city's median rent prices does not show any obvious drops,  which implies that there should be some other reason creating this change. The [Curbed](https://atlanta.curbed.com/2018/4/9/17207602/atlanta-real-estate-suburban-renaissance) tells us that  many people have moved to the suburbs from Atlanta in order to avoid high rent prices. This explains why rent burden has fallen. As people who consider the rent not affordable enough leave to suburban areas, people who have less of such problem are left in the city, therefore decreasing the ratio of rent burdened people.

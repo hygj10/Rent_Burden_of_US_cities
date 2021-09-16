@@ -1,0 +1,292 @@
+---
+title: "Shiny"
+author: "Doruk Kilitcioglu"
+date: "April 22, 2018"
+output: html_document
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## NYC
+
+```{r}
+library(rgdal)
+library(sp)
+library(raster)
+library(leaflet)  # for interactive maps (NOT leafletR here)
+library(dplyr)    # for working with data frames
+library(ggplot2)
+library(rgeos)
+#devtools::install_github("leonawicz/mapmate")
+library(mapmate)
+library(purrr)
+library(caTools)
+library(tidyverse)
+require("ggplot2")
+require("maptools")
+
+list.filenames<-list.files(path ='../data/NY_Census_Data/',pattern=".csv$")
+list.filenames
+
+# create an empty list that will serve as a container to receive the incoming files
+list.data<-list()
+
+# create a loop to read in your data
+for (i in 1:length(list.filenames))
+{
+  list.data[[i]]<-read.csv(paste('../data/NY_Census_Data/',list.filenames[i],sep=''))
+}
+
+# add the names of your data to the list
+names(list.data)<-list.filenames
+
+
+import.multiple.csv.files<-function(mypath,mypattern,...)
+{
+  tmp.list.1<-list.files(mypath, pattern=mypattern)
+  tmp.list.2<-list(length=length(tmp.list.1))
+  for (i in 1:length(tmp.list.1)){
+    tmp.list.2[[i]]<-read.csv(tmp.list.1[i],...)
+  }
+  names(tmp.list.2)<-tmp.list.1
+  tmp.list.2
+}
+
+acs_10 = list.data[[1]][,1:4]
+acs_11 = list.data[[2]][,1:4]
+acs_12 = list.data[[3]][,1:4]
+acs_13 = list.data[[4]][,1:4]
+acs_14 = list.data[[5]][,1:4]
+acs_15 = list.data[[6]][,1:4]
+acs_16 = list.data[[7]][,1:4]
+acs_9 = list.data[[8]][,1:4]
+
+colnames(acs_9)[4] <- '2009_RentBurden'
+colnames(acs_10)[4] <- '2010_RentBurden'
+colnames(acs_11)[4] <- '2011_RentBurden'
+colnames(acs_12)[4] <- '2012_RentBurden'
+colnames(acs_13)[4] <- '2013_RentBurden'
+colnames(acs_14)[4] <- '2014_RentBurden'
+colnames(acs_15)[4] <- '2015_RentBurden'
+colnames(acs_16)[4] <- '2016_RentBurden'
+
+sub1 <- dplyr::inner_join(acs_16, acs_9, by = 'GEO.id2')
+sub2 <- dplyr::inner_join(sub1, acs_10, by = 'GEO.id2')
+sub3 <- dplyr::inner_join(sub2, acs_11, by = 'GEO.id2')
+sub4 <- dplyr::inner_join(sub3, acs_12, by = 'GEO.id2')
+sub5 <- dplyr::inner_join(sub4, acs_13, by = 'GEO.id2')
+sub6 <- dplyr::inner_join(sub5, acs_14, by = 'GEO.id2')
+sub7 <- dplyr::inner_join(sub6, acs_15, by = 'GEO.id2')
+
+data <- sub7[,c(2,3,4,7,10,13,16,19,22,24,25)]
+
+nyc_tract <- readOGR("../data/NewYork/.","NY_New")
+
+nyc_tract@data$GEOID<-as.character(nyc_tract@data$GEOID)
+
+
+data <- select(data, GEO.id2, GEO.display.label,'2009_RentBurden','2010_RentBurden', '2011_RentBurden', '2012_RentBurden', '2013_RentBurden', '2014_RentBurden',
+               '2015_RentBurden', '2016_RentBurden') %>%
+  slice(-1) %>% # census has this extra descriptive record
+  rename(id=GEO.id2, geography=GEO.display.label)
+
+data <- mutate(data, id=as.character(id),
+               geography=as.character(geography))
+
+ggtract<-fortify(nyc_tract, region = "GEOID")
+
+ggtract<-left_join(ggtract, data, by=c("id"))
+
+plot_nyc_tract <- function(tract_year) {
+  ggplot() +
+  geom_polygon(data = ggtract , aes(x=long, y=lat, group = group, fill=ggtract[, paste(tract_year, "RentBurden", sep = "_")]), color="grey50") +
+   scale_fill_gradientn(colours = c("red", "white", "cadetblue"),
+                       values = c(1,0.5, .3, .2, .1, 0))+
+  coord_map(xlim = c(-74.26, -73.71), ylim = c(40.49,40.92))
+}
+
+```
+
+```{r}
+plot_nyc_tract(2014)
+```
+
+## Map
+
+```{r}
+# Load the maps from the R file
+source('map.R')
+us_map
+```
+
+## Time Series
+
+```{r warning=FALSE}
+# Load the time series from the R file
+source('time_series.R')
+head(metro_ts)
+```
+
+```{r}
+plot_median_rent("New York, NY")
+```
+
+```{r}
+plot_rent_growth("New York, NY")
+```
+
+
+```{r}
+plot_all_medians("median_rent")
+```
+
+## Shiny
+
+```{r}
+library(leaflet)
+library(shiny)
+library(plotly)
+gif_names <- list("New York, NY" = "nyc", "Los Angeles, CA" = "la", "Chicago, IL" = "chicago", "Houston, TX" = "houston",
+                  "Miami, FL" = "miami", "Atlanta, GA" = "atlanta", "Boston, MA" = "boston", "San Francisco, CA" = "sf",
+                  "Detroit, MI" = "detroit", "Denver, CO" = "denver")
+default_city = "New York, NY"
+
+ui <- navbarPage("Rent Burden", id = "mainPage", theme = "styles.css",
+  tabPanel("Story", value = "storyPage",
+    div(class = "centered-div", align = "center",
+      verticalLayout(
+        includeMarkdown("www/story/description.md"),
+        actionButton('jumpToMap', 'Show me')
+      )
+    )
+  ),
+  tabPanel("Map", value = "mapPage",
+    fluidPage(
+      fluidRow(
+        column(8,
+          div(class = "leaflet-wrapper",
+            leafletOutput("map", height="100%", width = "100%")
+          )
+        ),
+        column(4,
+          fluidPage(
+            fluidRow(
+              column(12,
+                p(textOutput("city_description"))
+              )
+            ),
+            fluidRow(
+              column(12,
+                tabsetPanel(
+                  tabPanel("Median Rent",
+                    plotlyOutput("median_rent_plot")
+                  ),
+                  tabPanel("Median Rent Growth",
+                    plotlyOutput("median_rent_growth")
+                  ),
+                  tabPanel("Tract",
+                    sliderInput(inputId = "year", label = "Choose a year",
+                      value = 2009, min = 2009, max = 2016, step = 1, sep = "",
+                      animate = animationOptions(interval = 1000, loop = TRUE)
+                    ),
+                    #plotlyOutput("tract_plot")
+                    imageOutput("tract_plot"),
+                    downloadButton("download_tract", label = "Download")
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+  ),
+  tabPanel("Comparisons", value = "comparisons",
+    tags$head(
+      includeCSS("www/styles.css")
+    ),
+    verticalLayout(
+      div(class = "centered-radio",
+        radioButtons("comparison_plot_type", NULL, inline = T,
+          c("Median Rent" = "median_rent",
+            "Median Rent (adjusted for inflation)" = "adjusted_rent"
+          )
+        )
+      ),
+      plotlyOutput("comparison_plot")
+    )
+  )
+)
+server <- function(input, output, session) {
+  observeEvent(input$jumpToMap, {
+    updateTabsetPanel(session, "mainPage", selected = "mapPage")
+  })
+  output$map <- renderLeaflet({
+    us_map
+  })
+  city <- eventReactive(input$map_shape_click,  {
+    x <- input$map_shape_click
+    y <- x$id
+    y
+  }, ignoreNULL = FALSE)
+  #output$tract_plot <- renderPlot({
+  #  plot_nyc_tract(input$year)
+  #})
+  output$tract_plot <- renderImage({
+    c <- city()
+    c <- if(is.null(c)) default_city else c
+    path <- paste("www/gifs/", gif_names[[c]], "_op.gif", sep = "")
+    list(
+      src = path,
+      contentType = "image/gif",
+      width = session$clientData[["output_tract_plot_width"]],
+      height = session$clientData[["output_tract_plot_height"]],
+      alt = "This is alternate text"
+    )
+  }, deleteFile = FALSE)
+  output$median_rent_plot <- renderPlotly({
+    c <- city()
+    c <- if(is.null(c)) default_city else c
+    plot_median_rent(c)
+  })
+  output$median_rent_growth <- renderPlotly({
+    c <- city()
+    c <- if(is.null(c)) default_city else c
+    plot_rent_growth(c)
+  })
+  output$city_description <- renderText({
+    c <- city()
+    c <- if(is.null(c)) default_city else c
+    filter(cities_with_rent, full_name == c)$description
+  })
+  output$comparison_plot <- renderPlotly({
+    typ <- input$comparison_plot_type
+    plot_all_medians(typ)
+  })
+  output$download_tract <- downloadHandler(
+    filename = function() {
+      c <- city()
+      c <- if(is.null(c)) default_city else c
+      paste(gif_names[[c]], "_op.gif", sep = "")
+    },
+    content = function(file) {
+      c <- city()
+      c <- if(is.null(c)) default_city else c
+      path <- paste("www/gifs/", gif_names[[c]], "_op.gif", sep = "")
+      file.copy(path, file)
+    },
+    contentType = "image/gif"
+  )
+}
+shinyApp(ui = ui, server = server)
+```
+
+## Run from local dir
+
+```{r}
+library(shiny)
+runApp()
+```

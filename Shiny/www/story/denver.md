@@ -1,0 +1,3 @@
+## Denver
+
+It’s rare to hear anything good on the affordability of homes in the Denver metro area and unfortunately, that remains true with a recently released housing report from Harvard University(Denverite, July 13 2017). In last decade, the median rent of the metro area increased by more than $800, which led to drastic shift in lifestyle choices. Forty-four metro Denver communities were considered “high-poverty neighborhoods” in 2000 where at least a fifth of residents was in poverty. By 2015, that number more than doubled to 111 neighborhoods, according to the report. [Source](https://www.denverite.com/people-denver-can-afford-mortgage-payments-rent-depressing-stats-new-national-housing-report-39254/).

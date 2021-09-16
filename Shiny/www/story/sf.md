@@ -1,0 +1,3 @@
+## San Francisco
+
+According to the ApartmentList list, a mere 38.3 percent of San Francisco renters qualify as rent burdened, of which the “severely rent burdened” make up a slim majority at 19.6 percent. The reason behind such unusual trend is that while rents are up 26 percent since 2005, incomes are also up 32.5 percent. Of course, just like the decline in rent burden nationwide, this is not good news at all—it just means that SF has picked up more wealthy renters (who have to pay an arm and a leg) and lost many more of its working-class and low-income renters. [Source](https://sf.curbed.com/2017/11/13/16640936/san-francisco-rent-burden-2017).

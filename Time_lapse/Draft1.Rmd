@@ -1,0 +1,213 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+### We define rent burden if more than 35% of the salary of the household goes towards rent.
+
+```{r}
+library(rgdal)
+library(sp)
+library(raster)
+library(leaflet)  # for interactive maps (NOT leafletR here)
+library(dplyr)    # for working with data frames
+library(ggplot2)
+#devtools::install_github("leonawicz/mapmate")
+library(mapmate)
+library(purrr)
+library(caTools)
+```
+
+
+# Code
+
+```{r}
+require("ggplot2")
+require("maptools")
+gpclibPermit()
+```
+
+### Reading census files
+
+
+```{r}
+#list.files(path ='data/NY_Census_Data/',pattern=".csv$") # use the pattern argument to define a common pattern  for import files with regex. Here: .csv
+ 
+# create a list from these files
+list.filenames<-list.files(path ='data/NewYork/',pattern=".csv$")
+list.filenames
+ 
+# create an empty list that will serve as a container to receive the incoming files
+list.data<-list()
+ 
+# create a loop to read in your data
+for (i in 1:length(list.filenames))
+{
+list.data[[i]]<-read.csv(paste('data/NewYork/',list.filenames[i],sep=''))
+}
+ 
+# add the names of your data to the list
+names(list.data)<-list.filenames
+
+
+import.multiple.csv.files<-function(mypath,mypattern,...)
+{
+tmp.list.1<-list.files(mypath, pattern=mypattern)
+tmp.list.2<-list(length=length(tmp.list.1))
+for (i in 1:length(tmp.list.1)){tmp.list.2[[i]]<-read.csv(tmp.list.1[i],...)}
+names(tmp.list.2)<-tmp.list.1
+tmp.list.2
+}
+```
+
+Modifying columns of dataframe 
+
+```{r}
+acs_10 = list.data[[2]][,c('GEO.id', 'GEO.id2', 'GEO.display.label','HD01_VD01', 'HD01_VD08', 'HD01_VD09', 'HD01_VD10', 'HD01_VD11')]
+acs_11 = list.data[[3]][,c('GEO.id', 'GEO.id2', 'GEO.display.label','HD01_VD01', 'HD01_VD08', 'HD01_VD09', 'HD01_VD10', 'HD01_VD11')]
+acs_12 = list.data[[4]][,c('GEO.id', 'GEO.id2', 'GEO.display.label','HD01_VD01', 'HD01_VD08', 'HD01_VD09', 'HD01_VD10', 'HD01_VD11')]
+acs_13 = list.data[[5]][,c('GEO.id', 'GEO.id2', 'GEO.display.label','HD01_VD01', 'HD01_VD08', 'HD01_VD09', 'HD01_VD10', 'HD01_VD11')]
+acs_14 = list.data[[6]][,c('GEO.id', 'GEO.id2', 'GEO.display.label', 'HD01_VD01','HD01_VD08', 'HD01_VD09', 'HD01_VD10', 'HD01_VD11')]
+acs_15 = list.data[[7]][,c('GEO.id', 'GEO.id2', 'GEO.display.label','HD01_VD01', 'HD01_VD08', 'HD01_VD09', 'HD01_VD10', 'HD01_VD11')]
+acs_16 = list.data[[8]][,c('GEO.id', 'GEO.id2', 'GEO.display.label','HD01_VD01', 'HD01_VD08', 'HD01_VD09', 'HD01_VD10', 'HD01_VD11')]
+acs_9 = list.data[[1]][,c('GEO.id', 'GEO.id2', 'GEO.display.label','HD01_VD01', 'HD01_VD08', 'HD01_VD09', 'HD01_VD10', 'HD01_VD11')]
+
+acs_9$Total_09 <- ((acs_9$HD01_VD08+acs_9$HD01_VD09+
+                      acs_9$HD01_VD10+acs_9$HD01_VD11)/acs_9$HD01_VD01)*100
+acs_10$Total_10 <- ((acs_10$HD01_VD08+acs_10$HD01_VD09+
+                      acs_10$HD01_VD10+acs_10$HD01_VD11)/acs_10$HD01_VD01)*100
+acs_11$Total_11 <- ((acs_11$HD01_VD08+acs_11$HD01_VD09+acs_11$HD01_VD10+
+                      acs_11$HD01_VD11)/acs_11$HD01_VD01)*100
+acs_12$Total_12 <- ((acs_12$HD01_VD08+acs_12$HD01_VD09+
+                      acs_12$HD01_VD10+acs_12$HD01_VD11)/acs_12$HD01_VD01)*100
+acs_13$Total_13 <- ((acs_13$HD01_VD08+acs_13$HD01_VD09+
+                       acs_13$HD01_VD10+acs_13$HD01_VD11)/acs_13$HD01_VD01)*100
+acs_14$Total_14 <- ((acs_14$HD01_VD08+acs_14$HD01_VD09+
+                      acs_14$HD01_VD10+acs_14$HD01_VD11)/acs_14$HD01_VD01)*100
+acs_15$Total_15 <- ((acs_15$HD01_VD08+acs_15$HD01_VD09+
+                      acs_15$HD01_VD10+acs_15$HD01_VD11)/acs_15$HD01_VD01)*100
+acs_16$Total_16 <- ((acs_16$HD01_VD08+acs_16$HD01_VD09+
+                       acs_16$HD01_VD10+acs_16$HD01_VD11)/acs_16$HD01_VD01)*100
+
+
+acs_9$Total_09[is.nan(acs_9$Total_09)] <- 0
+acs_10$Total_10[is.nan(acs_10$Total_10)] <- 0
+acs_11$Total_11[is.nan(acs_11$Total_11)] <- 0
+acs_12$Total_12[is.nan(acs_12$Total_12)] <- 0
+acs_13$Total_13[is.nan(acs_13$Total_13)] <- 0
+acs_14$Total_14[is.nan(acs_14$Total_14)] <- 0
+acs_15$Total_15[is.nan(acs_15$Total_15)] <- 0
+acs_16$Total_16[is.nan(acs_16$Total_16)] <- 0
+```
+
+### Joining datasets from 2009-2016
+
+```{r}
+sub1 <- dplyr::left_join(acs_16, acs_9, by = 'GEO.id2')
+sub2 <- dplyr::left_join(sub1, acs_10, by = 'GEO.id2')
+sub3 <- dplyr::left_join(sub2, acs_11, by = 'GEO.id2')
+sub4 <- dplyr::left_join(sub3, acs_12, by = 'GEO.id2')
+sub5 <- dplyr::left_join(sub4, acs_13, by = 'GEO.id2')
+sub6 <- dplyr::left_join(sub5, acs_14, by = 'GEO.id2')
+sub7 <- dplyr::left_join(sub6, acs_15, by = 'GEO.id2')
+
+data <- sub7[, c(1,2,3,9,17,25,33, 41, 49, 57, 65)]
+
+```
+
+### Reading in shapefile and plotting sample plot
+
+```{r}
+nyc_tract <- readOGR("data/NewYork/.","nyc")
+
+##For other cities
+nyc_tract@data$GEOID<-as.character(nyc_tract@data$GEOID)
+
+## For LA/SF and Denver
+#nyc_tract@data$GEO_ID<-as.character(nyc_tract@data$GEO_ID)
+
+
+data <- select(data, GEO.id2,'Total_09','Total_10', 'Total_11', 'Total_12', 'Total_13', 'Total_14', 'Total_15', 'Total_16') %>% 
+  slice(-1) %>% # census has this extra descriptive record
+  rename(id=GEO.id2)
+
+data <- mutate(data, id=as.character(id))
+
+## For other cities
+ggtract<-fortify(nyc_tract, region = "GEOID") 
+
+## For LA/SF and Denver 
+#### From here
+
+#ggtract<-fortify(nyc_tract, region = "GEO_ID") 
+
+#for (i in 1:nrow(ggtract)){
+#  ggtract$id[i] <- strsplit(ggtract$id[i], 'S0')[[1]][2]
+#}
+
+#### Till here
+ggtract<-left_join(ggtract, data, by=c("id")) 
+ggtract <- subset(ggtract, is.na(ggtract$Total_11)==FALSE)
+ggplot() +
+  geom_polygon(data = ggtract , aes(x=long, y=lat, group = group, fill=ggtract$"Total_09"))+ scale_fill_gradientn(colours = c("plum", "plum2", "plum4"),
+                       values = c(1,.3,0))+ labs(x = '', y = '')+
+  theme_void() + labs(fill='Number of household \n under rent burden')
+  #coord_map(xlim = c(-74.26, -73.71), ylim = c(40.49,40.92))
+
+```
+
+### Looping through plots
+
+```{r}
+j = 1
+
+for (n in 8:15) {
+
+     # create different categories/shadings of unemployment  
+     #ggtract$rate <- cut_interval(as.numeric(ggtract[,n]), n = 5)
+    #rate = c('Total_09', 'Total_10', 'Total_11', 'Total_12', 'Total_13', 'Total_14', 'Total_15', 'Total_16')
+  #ggtract$rate <- quantile(as.numeric(ggtract[,n]), probs = seq(0, 1, 0.25), na.rm = FALSE,
+   #      names = TRUE, type = 7)
+  
+     # choose colours
+     cbbPalette <- c("#E3D1E7","#D7B5D8","#DB8DC3","#DF65B0","#D63B83","#CE1256")
+    lis = c(2009,2010,2011,2012,2013,2014,2015,2016)
+     #ggplot code
+     map = ggplot(ggtract, aes(long, lat, group = group)) +
+     geom_polygon(aes(fill = as.numeric(ggtract[,n])), colour = alpha("black", 1/2), size = 0.2) +
+       scale_fill_gradientn(colours = cbbPalette)+
+       labs(x = '', y = '')+
+       #scale_fill_viridis()+
+  theme_void() + labs(fill=paste('Number of households \n under rent burden \n in ', lis[n-7], sep=''))
+
+     #get the date of the unemployment data to use in labeling map
+
+     name <- names(ggtract)[n]
+     g1 <- map + coord_map() #+ opts(title = name)
+     ggsave(plot = g1, filename=paste('nyc_rentburden', j, '.jpg', sep = ''), height = 5, width = 6)
+     j = j + 1
+
+} 
+```
+
+### Making GIF from the images stored
+
+```{r}
+p <- "nyc_rentburden%d.jpg"
+out <- "nyc_op.gif"
+# 10 fps gif
+ffmpeg(pattern = p, output = out, rate = 14)
+# Same as above. Set overwrite=TRUE if output exists.
+ffmpeg(pattern = p, output = out, delay = 1, overwrite = TRUE)
+```
+
+
+Visualing GIF
+
+```{r}
+## Should work on windows
+#showGIF("nyc_op.gif")
+```
+

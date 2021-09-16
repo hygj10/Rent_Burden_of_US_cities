@@ -1,0 +1,57 @@
+.leaflet-wrapper {
+    position: fixed;
+    top: 41px;
+    left: 0;
+    width: 66%;
+    height: 100%;
+    overflow: hidden;
+    padding: 0
+}
+
+.centered-div {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 60%;
+    left: 20%;
+    font-family: GuppySans;
+}
+
+.navbar-default {
+    background-color: #000000;
+    border-color: #000000;
+}
+
+.navbar-brand {
+    color: #ececec !important;
+}
+
+.navbar-nav>li>a {
+    color: #ececec !important;
+}
+
+.navbar-nav>.active>a {
+    color: #000000 !important;
+}
+
+.centered-radio {
+    text-align: center;
+}
+
+@font-face {
+    font-family: AvenyT;
+    src: url("www/fonts/AvenyT.otf");
+}
+
+@font-face {
+    font-family: GuppySans;
+    src: url("www/fonts/GuppySans.otf");
+}
+
+.aveny {
+    font-family: AvenyT;
+}
+
+.guppy {
+    font-family: GuppySans;
+}

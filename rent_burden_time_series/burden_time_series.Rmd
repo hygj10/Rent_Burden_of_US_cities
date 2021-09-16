@@ -1,0 +1,55 @@
+---
+title: "burden_time_series"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r cars}
+library(ggplot2)
+library(tidyverse)
+library(plotly)
+library(data.table)
+library(dygraphs)
+library(quantmod)
+library(fpp)
+library(xts)
+library(plyr)
+library(readxl)
+```
+```{r}
+burden <- read_excel("cp_hous_2015acs1yr_puma.xlsx", skip = 9)
+
+
+burden <- burden[181:182,]
+rownames(burden) <- c("30% or more", "35% or more")
+burden 
+
+
+burden[1, ] <- as.numeric(substr(burden[1, ],1,nchar(burden[1, ])-1)) + as.numeric(substr(burden[2, ],1, nchar(burden[2, ])-1))
+
+
+burden <- burden[1,]
+
+```
+```{r}
+ny_burden <- burden[tail(seq_along(burden),9)] 
+ny_burden
+ny_burden$`2015 - 2014 Statistical Significance__5` <- NULL
+ny_burden$`2015 - 2013 Statistical Significance__5` <- NULL
+ny_burden$`2015 - 2012 Statistical Significance__5` <- NULL
+ny_burden$`2015 - 2011 Statistical Significance__5` <- NULL
+colnames(ny_burden) <- substr(colnames(ny_burden),1,4)
+
+ny_burden<-as.data.frame(t(ny_burden))
+ny_burden <- setNames(cbind(rownames(ny_burden), ny_burden, row.names = NULL), 
+         c("COL1", "VAL1"))
+ny_burden$VAL1 <- as.numeric(as.character(ny_burden$VAL1))
+ny_burden$COL1 <- as.numeric(as.character(ny_burden$COL1))
+ny_burden
+ggplot(ny_burden, aes(x=COL1, y=VAL1,group=1)) + geom_line() 
+```
+

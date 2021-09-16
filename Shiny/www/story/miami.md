@@ -1,0 +1,4 @@
+## Miami
+
+Unlike many other cities, Miami does not have a sharp decline in rent burden. 
+Overall, the slope of the line is noticeably positive, showing that rent burden has been increasing for residents in Miami.  If we look at the median rent comparison graph, Miami's rent has not increased as much as other cities with increasing rent burden rates. This may signify that the median income of Miami residents has not increased as much in comparison to other cities. According to [Miami Herald](http://www.miamiherald.com/news/business/real-estate-news/article183538886.html), this indeed seems to be the case, as it is stated that although Miami is not expensive city rent wise, if one were to see what people actually earn in the city the amount becomes substantial. As a result, Miami is one of the most rent burdened cities in the whole country.
