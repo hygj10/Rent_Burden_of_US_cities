@@ -1,0 +1,495 @@
+---
+title: "rent_burden_series"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(ggthemes)
+```
+
+```{r}
+la2009 <- read.csv("LA/ACS_09_5YR_B25070_with_ann.csv") 
+la2010 <- read.csv("LA/ACS_10_5YR_B25070_with_ann.csv")
+la2011 <- read.csv("LA/ACS_11_5YR_B25070_with_ann.csv")
+la2012 <- read.csv("LA/ACS_12_5YR_B25070_with_ann.csv")
+la2013 <- read.csv("LA/ACS_13_5YR_B25070_with_ann.csv")
+la2014 <- read.csv("LA/ACS_14_5YR_B25070_with_ann.csv")
+la2015 <- read.csv("LA/ACS_15_5YR_B25070_with_ann.csv")
+la2016 <- read.csv("LA/ACS_16_5YR_B25070_with_ann.csv")
+la2009 <- la2009[,c(4:25)]
+la2010 <- la2010[,c(4:25)]
+la2011 <- la2011[,c(4:25)]
+la2012 <- la2012[,c(4:25)]
+la2013 <- la2013[,c(4:25)]
+la2014 <- la2014[,c(4:25)]
+la2015 <- la2015[,c(4:25)]
+la2016 <- la2016[,c(4:25)]
+
+ny2009 <- read.csv("NewYork/ACS_09_5YR_B25070_with_ann.csv") 
+ny2010 <- read.csv("NewYork/ACS_10_5YR_B25070_with_ann.csv")
+ny2011 <- read.csv("NewYork/ACS_11_5YR_B25070_with_ann.csv")
+ny2012 <- read.csv("NewYork/ACS_12_5YR_B25070_with_ann.csv")
+ny2013 <- read.csv("NewYork/ACS_13_5YR_B25070_with_ann.csv")
+ny2014 <- read.csv("NewYork/ACS_14_5YR_B25070_with_ann.csv")
+ny2015 <- read.csv("NewYork/ACS_15_5YR_B25070_with_ann.csv")
+ny2016 <- read.csv("NewYork/ACS_16_5YR_B25070_with_ann.csv")
+ny2009 <- ny2009[,c(4:25)]
+ny2010 <- ny2010[,c(4:25)]
+ny2011 <- ny2011[,c(4:25)]
+ny2012 <- ny2012[,c(4:25)]
+ny2013 <- ny2013[,c(4:25)]
+ny2014 <- ny2014[,c(4:25)]
+ny2015 <- ny2015[,c(4:25)]
+ny2016 <- ny2016[,c(4:25)]
+
+at2009 <- read.csv("Atlanta/ACS_09_5YR_B25070_with_ann.csv") 
+at2010 <- read.csv("Atlanta/ACS_10_5YR_B25070_with_ann.csv")
+at2011 <- read.csv("Atlanta/ACS_11_5YR_B25070_with_ann.csv")
+at2012 <- read.csv("Atlanta/ACS_12_5YR_B25070_with_ann.csv")
+at2013 <- read.csv("Atlanta/ACS_13_5YR_B25070_with_ann.csv")
+at2014 <- read.csv("Atlanta/ACS_14_5YR_B25070_with_ann.csv")
+at2015 <- read.csv("Atlanta/ACS_15_5YR_B25070_with_ann.csv")
+at2016 <- read.csv("Atlanta/ACS_16_5YR_B25070_with_ann.csv")
+at2009 <- at2009[,c(4:25)]
+at2010 <- at2010[,c(4:25)]
+at2011 <- at2011[,c(4:25)]
+at2012 <- at2012[,c(4:25)]
+at2013 <- at2013[,c(4:25)]
+at2014 <- at2014[,c(4:25)]
+at2015 <- at2015[,c(4:25)]
+at2016 <- at2016[,c(4:25)]
+
+bt2009 <- read.csv("Boston/ACS_09_5YR_B25070_with_ann.csv") 
+bt2010 <- read.csv("Boston/ACS_10_5YR_B25070_with_ann.csv")
+bt2011 <- read.csv("Boston/ACS_11_5YR_B25070_with_ann.csv")
+bt2012 <- read.csv("Boston/ACS_12_5YR_B25070_with_ann.csv")
+bt2013 <- read.csv("Boston/ACS_13_5YR_B25070_with_ann.csv")
+bt2014 <- read.csv("Boston/ACS_14_5YR_B25070_with_ann.csv")
+bt2015 <- read.csv("Boston/ACS_15_5YR_B25070_with_ann.csv")
+bt2016 <- read.csv("Boston/ACS_16_5YR_B25070_with_ann.csv")
+bt2009 <- bt2009[,c(4:25)]
+bt2010 <- bt2010[,c(4:25)]
+bt2011 <- bt2011[,c(4:25)]
+bt2012 <- bt2012[,c(4:25)]
+bt2013 <- bt2013[,c(4:25)]
+bt2014 <- bt2014[,c(4:25)]
+bt2015 <- bt2015[,c(4:25)]
+bt2016 <- bt2016[,c(4:25)]
+
+
+cc2009 <- read.csv("Chicago/ACS_09_5YR_B25070_with_ann.csv") 
+cc2010 <- read.csv("Chicago/ACS_10_5YR_B25070_with_ann.csv")
+cc2011 <- read.csv("Chicago/ACS_11_5YR_B25070_with_ann.csv")
+cc2012 <- read.csv("Chicago/ACS_12_5YR_B25070_with_ann.csv")
+cc2013 <- read.csv("Chicago/ACS_13_5YR_B25070_with_ann.csv")
+cc2014 <- read.csv("Chicago/ACS_14_5YR_B25070_with_ann.csv")
+cc2015 <- read.csv("Chicago/ACS_15_5YR_B25070_with_ann.csv")
+cc2016 <- read.csv("Chicago/ACS_16_5YR_B25070_with_ann.csv")
+cc2009 <- cc2009[,c(4:25)]
+cc2010 <- cc2010[,c(4:25)]
+cc2011 <- cc2011[,c(4:25)]
+cc2012 <- cc2012[,c(4:25)]
+cc2013 <- cc2013[,c(4:25)]
+cc2014 <- cc2014[,c(4:25)]
+cc2015 <- cc2015[,c(4:25)]
+cc2016 <- cc2016[,c(4:25)]
+
+dv2009 <- read.csv("Denver/ACS_09_5YR_B25070_with_ann.csv") 
+dv2010 <- read.csv("Denver/ACS_10_5YR_B25070_with_ann.csv")
+dv2011 <- read.csv("Denver/ACS_11_5YR_B25070_with_ann.csv")
+dv2012 <- read.csv("Denver/ACS_12_5YR_B25070_with_ann.csv")
+dv2013 <- read.csv("Denver/ACS_13_5YR_B25070_with_ann.csv")
+dv2014 <- read.csv("Denver/ACS_14_5YR_B25070_with_ann.csv")
+dv2015 <- read.csv("Denver/ACS_15_5YR_B25070_with_ann.csv")
+dv2016 <- read.csv("Denver/ACS_16_5YR_B25070_with_ann.csv")
+dv2009 <- dv2009[,c(4:25)]
+dv2010 <- dv2010[,c(4:25)]
+dv2011 <- dv2011[,c(4:25)]
+dv2012 <- dv2012[,c(4:25)]
+dv2013 <- dv2013[,c(4:25)]
+dv2014 <- dv2014[,c(4:25)]
+dv2015 <- dv2015[,c(4:25)]
+dv2016 <- dv2016[,c(4:25)]
+
+
+dt2009 <- read.csv("Detroit/ACS_09_5YR_B25070_with_ann.csv") 
+dt2010 <- read.csv("Detroit/ACS_10_5YR_B25070_with_ann.csv")
+dt2011 <- read.csv("Detroit/ACS_11_5YR_B25070_with_ann.csv")
+dt2012 <- read.csv("Detroit/ACS_12_5YR_B25070_with_ann.csv")
+dt2013 <- read.csv("Detroit/ACS_13_5YR_B25070_with_ann.csv")
+dt2014 <- read.csv("Detroit/ACS_14_5YR_B25070_with_ann.csv")
+dt2015 <- read.csv("Detroit/ACS_15_5YR_B25070_with_ann.csv")
+dt2016 <- read.csv("Detroit/ACS_16_5YR_B25070_with_ann.csv")
+dt2009 <- dt2009[,c(4:25)]
+dt2010 <- dt2010[,c(4:25)]
+dt2011 <- dt2011[,c(4:25)]
+dt2012 <- dt2012[,c(4:25)]
+dt2013 <- dt2013[,c(4:25)]
+dt2014 <- dt2014[,c(4:25)]
+dt2015 <- dt2015[,c(4:25)]
+dt2016 <- dt2016[,c(4:25)]
+
+hu2009 <- read.csv("Houston/ACS_09_5YR_B25070_with_ann.csv") 
+hu2010 <- read.csv("Houston/ACS_10_5YR_B25070_with_ann.csv")
+hu2011 <- read.csv("Houston/ACS_11_5YR_B25070_with_ann.csv")
+hu2012 <- read.csv("Houston/ACS_12_5YR_B25070_with_ann.csv")
+hu2013 <- read.csv("Houston/ACS_13_5YR_B25070_with_ann.csv")
+hu2014 <- read.csv("Houston/ACS_14_5YR_B25070_with_ann.csv")
+hu2015 <- read.csv("Houston/ACS_15_5YR_B25070_with_ann.csv")
+hu2016 <- read.csv("Houston/ACS_16_5YR_B25070_with_ann.csv")
+hu2009 <- hu2009[,c(4:25)]
+hu2010 <- hu2010[,c(4:25)]
+hu2011 <- hu2011[,c(4:25)]
+hu2012 <- hu2012[,c(4:25)]
+hu2013 <- hu2013[,c(4:25)]
+hu2014 <- hu2014[,c(4:25)]
+hu2015 <- hu2015[,c(4:25)]
+hu2016 <- hu2016[,c(4:25)]
+
+mi2009 <- read.csv("Miami/ACS_09_5YR_B25070_with_ann.csv") 
+mi2010 <- read.csv("Miami/ACS_10_5YR_B25070_with_ann.csv")
+mi2011 <- read.csv("Miami/ACS_11_5YR_B25070_with_ann.csv")
+mi2012 <- read.csv("Miami/ACS_12_5YR_B25070_with_ann.csv")
+mi2013 <- read.csv("Miami/ACS_13_5YR_B25070_with_ann.csv")
+mi2014 <- read.csv("Miami/ACS_14_5YR_B25070_with_ann.csv")
+mi2015 <- read.csv("Miami/ACS_15_5YR_B25070_with_ann.csv")
+mi2016 <- read.csv("Miami/ACS_16_5YR_B25070_with_ann.csv")
+mi2009 <- mi2009[,c(4:25)]
+mi2010 <- mi2010[,c(4:25)]
+mi2011 <- mi2011[,c(4:25)]
+mi2012 <- mi2012[,c(4:25)]
+mi2013 <- mi2013[,c(4:25)]
+mi2014 <- mi2014[,c(4:25)]
+mi2015 <- mi2015[,c(4:25)]
+mi2016 <- mi2016[,c(4:25)]
+
+sf2009 <- read.csv("SF/ACS_09_5YR_B25070_with_ann.csv") 
+sf2010 <- read.csv("SF/ACS_10_5YR_B25070_with_ann.csv")
+sf2011 <- read.csv("SF/ACS_11_5YR_B25070_with_ann.csv")
+sf2012 <- read.csv("SF/ACS_12_5YR_B25070_with_ann.csv")
+sf2013 <- read.csv("SF/ACS_13_5YR_B25070_with_ann.csv")
+sf2014 <- read.csv("SF/ACS_14_5YR_B25070_with_ann.csv")
+sf2015 <- read.csv("SF/ACS_15_5YR_B25070_with_ann.csv")
+sf2016 <- read.csv("SF/ACS_16_5YR_B25070_with_ann.csv")
+sf2009 <- sf2009[,c(4:25)]
+sf2010 <- sf2010[,c(4:25)]
+sf2011 <- sf2011[,c(4:25)]
+sf2012 <- sf2012[,c(4:25)]
+sf2013 <- sf2013[,c(4:25)]
+sf2014 <- sf2014[,c(4:25)]
+sf2015 <- sf2015[,c(4:25)]
+sf2016 <- sf2016[,c(4:25)]
+```
+
+```{r}
+thfive <- function(x) {
+  e<-as.data.frame(x)
+  total <- (e["HD01_VD08",] + e["HD01_VD09",] + e["HD01_VD10",] + e["HD01_VD11",])/e[1,]
+  return(total)
+}
+fhfive <- function(x) {
+  e<-as.data.frame(x)
+  total <- (e["HD01_VD10",]+ e["HD01_VD11",])/e[1,]
+  return(total)
+}
+lattf <- thfive(colSums(la2009))
+lattf <- rbind(lattf, thfive(colSums(la2010)))
+lattf <- rbind(lattf, thfive(colSums(la2011)))
+lattf <- rbind(lattf, thfive(colSums(la2012)))
+lattf <- rbind(lattf, thfive(colSums(la2013)))
+lattf <- rbind(lattf, thfive(colSums(la2014)))
+lattf <- rbind(lattf, thfive(colSums(la2015)))
+lattf <- rbind(lattf, thfive(colSums(la2016)))
+lattf <- as.data.frame(lattf)
+rownames(lattf) <- c(2009,2010,2011,2012,2013,2014,2015,2016)
+lattf
+
+ggplot(lattf, aes(x=rownames(lattf), y=V1,group=1)) + geom_line() + theme_minimal()+ xlab("Year") + ylab("Proportion of rent burdened people") + ggtitle("People with rent of 35% or more as percentage of income in Los Angeles")
+```
+```{r}
+latff <- fhfive(colSums(la2009))
+latff <- rbind(latff, fhfive(colSums(la2010)))
+latff <- rbind(latff, fhfive(colSums(la2011)))
+latff <- rbind(latff, fhfive(colSums(la2012)))
+latff <- rbind(latff, fhfive(colSums(la2013)))
+latff <- rbind(latff, fhfive(colSums(la2014)))
+latff <- rbind(latff, fhfive(colSums(la2015)))
+latff <- rbind(latff, fhfive(colSums(la2016)))
+latff <- as.data.frame(latff)
+rownames(latff) <- c(2009,2010,2011,2012,2013,2014,2015,2016)
+latff
+
+ggplot(latff, aes(x=rownames(latff), y=V1,group=1)) + geom_line() + theme_minimal()+ xlab("Year") + ylab("Proportion of rent burdened people") + ggtitle("People with rent of 50% or more as percentage of income in Los Angeles")
+
+```
+
+```{r}
+atttf <- thfive(colSums(at2009))
+atttf <- rbind(atttf, thfive(colSums(at2010)))
+atttf <- rbind(atttf, thfive(colSums(at2011)))
+atttf <- rbind(atttf, thfive(colSums(at2012)))
+atttf <- rbind(atttf, thfive(colSums(at2013)))
+atttf <- rbind(atttf, thfive(colSums(at2014)))
+atttf <- rbind(atttf, thfive(colSums(at2015)))
+atttf <- rbind(atttf, thfive(colSums(at2016)))
+atttf <- as.data.frame(atttf)
+rownames(atttf) <- c(2009,2010,2011,2012,2013,2014,2015,2016)
+
+ggplot(atttf, aes(x=rownames(atttf), y=V1,group=1)) + geom_line() + theme_minimal()+ xlab("Year") + ylab("Proportion of rent burdened people") + ggtitle("People with rent of 35% or more as percentage of income in Atlanta")
+
+```
+```{r}
+attf <- fhfive(colSums(at2009))
+attf <- rbind(attf, fhfive(colSums(at2010)))
+attf <- rbind(attf, fhfive(colSums(at2011)))
+attf <- rbind(attf, fhfive(colSums(at2012)))
+attf <- rbind(attf, fhfive(colSums(at2013)))
+attf <- rbind(attf, fhfive(colSums(at2014)))
+attf <- rbind(attf, fhfive(colSums(at2015)))
+attf <- rbind(attf, fhfive(colSums(at2016)))
+attf <- as.data.frame(attf)
+rownames(attf) <- c(2009,2010,2011,2012,2013,2014,2015,2016)
+
+ggplot(attf, aes(x=rownames(attf), y=V1,group=1)) + geom_line() + theme_minimal()+ xlab("Year") + ylab("Proportion of rent burdened people") + ggtitle("People with rent of 50% or more as percentage of income in Atlanta")
+
+```
+
+```{r}
+nyttf <- thfive(colSums(ny2009))
+nyttf <- rbind(nyttf, thfive(colSums(ny2010)))
+nyttf <- rbind(nyttf, thfive(colSums(ny2011)))
+nyttf <- rbind(nyttf, thfive(colSums(ny2012)))
+nyttf <- rbind(nyttf, thfive(colSums(ny2013)))
+nyttf <- rbind(nyttf, thfive(colSums(ny2014)))
+nyttf <- rbind(nyttf, thfive(colSums(ny2015)))
+nyttf <- rbind(nyttf, thfive(colSums(ny2016)))
+nyttf <- as.data.frame(nyttf)
+rownames(nyttf) <- c(2009,2010,2011,2012,2013,2014,2015,2016)
+
+ggplot(nyttf, aes(x=rownames(nyttf), y=V1,group=1)) + geom_line() + theme_minimal()+ xlab("Year") + ylab("Proportion of rent burdened people") + ggtitle("People with rent of 35% or more as percentage of income in New York")
+```
+```{r}
+nytf <- fhfive(colSums(ny2009))
+nytf <- rbind(nytf, fhfive(colSums(ny2010)))
+nytf <- rbind(nytf, fhfive(colSums(ny2011)))
+nytf <- rbind(nytf, fhfive(colSums(ny2012)))
+nytf <- rbind(nytf, fhfive(colSums(ny2013)))
+nytf <- rbind(nytf, fhfive(colSums(ny2014)))
+nytf <- rbind(nytf, fhfive(colSums(ny2015)))
+nytf <- rbind(nytf, fhfive(colSums(ny2016)))
+nytf <- as.data.frame(nytf)
+rownames(nytf) <- c(2009,2010,2011,2012,2013,2014,2015,2016)
+
+ggplot(nytf, aes(x=rownames(nytf), y=V1,group=1)) + geom_line() + theme_minimal()+ xlab("Year") + ylab("Proportion of rent burdened people") + ggtitle("People with rent of 50% or more as percentage of income in New York")
+```
+
+```{r}
+dtttf <- thfive(colSums(dt2009))
+dtttf <- rbind(dtttf, thfive(colSums(dt2010)))
+dtttf <- rbind(dtttf, thfive(colSums(dt2011)))
+dtttf <- rbind(dtttf, thfive(colSums(dt2012)))
+dtttf <- rbind(dtttf, thfive(colSums(dt2013)))
+dtttf <- rbind(dtttf, thfive(colSums(dt2014)))
+dtttf <- rbind(dtttf, thfive(colSums(dt2015)))
+dtttf <- rbind(dtttf, thfive(colSums(dt2016)))
+dtttf <- as.data.frame(dtttf)
+rownames(dtttf) <- c(2009,2010,2011,2012,2013,2014,2015,2016)
+
+ggplot(dtttf, aes(x=rownames(dtttf), y=V1,group=1)) + geom_line() + theme_minimal()+ xlab("Year") + ylab("Proportion of rent burdened people") + ggtitle("People with rent of 35% or more as percentage of income in Detroit")
+```
+```{r}
+dttf <- fhfive(colSums(dt2009))
+dttf <- rbind(dttf, fhfive(colSums(dt2010)))
+dttf <- rbind(dttf, fhfive(colSums(dt2011)))
+dttf <- rbind(dttf, fhfive(colSums(dt2012)))
+dttf <- rbind(dttf, fhfive(colSums(dt2013)))
+dttf <- rbind(dttf, fhfive(colSums(dt2014)))
+dttf <- rbind(dttf, fhfive(colSums(dt2015)))
+dttf <- rbind(dttf, fhfive(colSums(dt2016)))
+dttf <- as.data.frame(dttf)
+rownames(dttf) <- c(2009,2010,2011,2012,2013,2014,2015,2016)
+
+ggplot(dttf, aes(x=rownames(dttf), y=V1,group=1)) + geom_line() + theme_minimal()+ xlab("Year") + ylab("Proportion of rent burdened people") + ggtitle("People with rent of 50% or more as percentage of income in Detroit")
+```
+
+```{r}
+btttf <- thfive(colSums(bt2009))
+btttf <- rbind(btttf, thfive(colSums(bt2010)))
+btttf <- rbind(btttf, thfive(colSums(bt2011)))
+btttf <- rbind(btttf, thfive(colSums(bt2012)))
+btttf <- rbind(btttf, thfive(colSums(bt2013)))
+btttf <- rbind(btttf, thfive(colSums(bt2014)))
+btttf <- rbind(btttf, thfive(colSums(bt2015)))
+btttf <- rbind(btttf, thfive(colSums(bt2016)))
+btttf <- as.data.frame(btttf)
+rownames(btttf) <- c(2009,2010,2011,2012,2013,2014,2015,2016)
+
+ggplot(btttf, aes(x=rownames(btttf), y=V1,group=1)) + geom_line() + theme_minimal()+ xlab("Year") + ylab("Proportion of rent burdened people") + ggtitle("People with rent of 35% or more as percentage of income in Boston")
+```
+
+```{r}
+bttf <- fhfive(colSums(bt2009))
+bttf <- rbind(bttf, fhfive(colSums(bt2010)))
+bttf <- rbind(bttf, fhfive(colSums(bt2011)))
+bttf <- rbind(bttf, fhfive(colSums(bt2012)))
+bttf <- rbind(bttf, fhfive(colSums(bt2013)))
+bttf <- rbind(bttf, fhfive(colSums(bt2014)))
+bttf <- rbind(bttf, fhfive(colSums(bt2015)))
+bttf <- rbind(bttf, fhfive(colSums(bt2016)))
+bttf <- as.data.frame(bttf)
+rownames(bttf) <- c(2009,2010,2011,2012,2013,2014,2015,2016)
+
+ggplot(bttf, aes(x=rownames(bttf), y=V1,group=1)) + geom_line() + theme_minimal()+ xlab("Year") + ylab("Proportion of rent burdened people") + ggtitle("People with rent of 50% or more as percentage of income in Boston")
+```
+
+```{r}
+dvttf <- thfive(colSums(dv2009))
+dvttf <- rbind(dvttf, thfive(colSums(dv2010)))
+dvttf <- rbind(dvttf, thfive(colSums(dv2011)))
+dvttf <- rbind(dvttf, thfive(colSums(dv2012)))
+dvttf <- rbind(dvttf, thfive(colSums(dv2013)))
+dvttf <- rbind(dvttf, thfive(colSums(dv2014)))
+dvttf <- rbind(dvttf, thfive(colSums(dv2015)))
+dvttf <- rbind(dvttf, thfive(colSums(dv2016)))
+dvttf <- as.data.frame(dvttf)
+rownames(dvttf) <- c(2009,2010,2011,2012,2013,2014,2015,2016)
+
+ggplot(dvttf, aes(x=rownames(dvttf), y=V1,group=1)) + geom_line() + theme_minimal()+ xlab("Year") + ylab("Proportion of rent burdened people") + ggtitle("People with rent of 35% or more as percentage of income in Denver")
+```
+```{r}
+dvtf <- fhfive(colSums(dv2009))
+dvtf <- rbind(dvtf, fhfive(colSums(dv2010)))
+dvtf <- rbind(dvtf, fhfive(colSums(dv2011)))
+dvtf <- rbind(dvtf, fhfive(colSums(dv2012)))
+dvtf <- rbind(dvtf, fhfive(colSums(dv2013)))
+dvtf <- rbind(dvtf, fhfive(colSums(dv2014)))
+dvtf <- rbind(dvtf, fhfive(colSums(dv2015)))
+dvtf <- rbind(dvtf, fhfive(colSums(dv2016)))
+dvtf <- as.data.frame(dvtf)
+rownames(dvtf) <- c(2009,2010,2011,2012,2013,2014,2015,2016)
+
+ggplot(dvtf, aes(x=rownames(dvtf), y=V1,group=1)) + geom_line() + theme_minimal()+ xlab("Year") + ylab("Proportion of rent burdened people") + ggtitle("People with rent of 50% or more as percentage of income in Denver")
+```
+
+```{r}
+ccttf <- thfive(colSums(cc2009))
+ccttf <- rbind(ccttf, thfive(colSums(cc2010)))
+ccttf <- rbind(ccttf, thfive(colSums(cc2011)))
+ccttf <- rbind(ccttf, thfive(colSums(cc2012)))
+ccttf <- rbind(ccttf, thfive(colSums(cc2013)))
+ccttf <- rbind(ccttf, thfive(colSums(cc2014)))
+ccttf <- rbind(ccttf, thfive(colSums(cc2015)))
+ccttf <- rbind(ccttf, thfive(colSums(cc2016)))
+ccttf <- as.data.frame(ccttf)
+rownames(ccttf) <- c(2009,2010,2011,2012,2013,2014,2015,2016)
+
+ggplot(ccttf, aes(x=rownames(ccttf), y=V1,group=1)) + geom_line() + theme_minimal()+ xlab("Year") + ylab("Proportion of rent burdened people") + ggtitle("People with rent of 35% or more as percentage of income in Chicago")
+```
+```{r}
+cctf <- fhfive(colSums(cc2009))
+cctf <- rbind(cctf, fhfive(colSums(cc2010)))
+cctf <- rbind(cctf, fhfive(colSums(cc2011)))
+cctf <- rbind(cctf, fhfive(colSums(cc2012)))
+cctf <- rbind(cctf, fhfive(colSums(cc2013)))
+cctf <- rbind(cctf, fhfive(colSums(cc2014)))
+cctf <- rbind(cctf, fhfive(colSums(cc2015)))
+cctf <- rbind(cctf, fhfive(colSums(cc2016)))
+cctf <- as.data.frame(cctf)
+rownames(cctf) <- c(2009,2010,2011,2012,2013,2014,2015,2016)
+
+ggplot(cctf, aes(x=rownames(cctf), y=V1,group=1)) + geom_line() + theme_minimal()+ xlab("Year") + ylab("Proportion of rent burdened people") + ggtitle("People with rent of 50% or more as percentage of income in Chicago")
+```
+
+```{r}
+mittf <- thfive(colSums(mi2009))
+mittf <- rbind(mittf, thfive(colSums(mi2010)))
+mittf <- rbind(mittf, thfive(colSums(mi2011)))
+mittf <- rbind(mittf, thfive(colSums(mi2012)))
+mittf <- rbind(mittf, thfive(colSums(mi2013)))
+mittf <- rbind(mittf, thfive(colSums(mi2014)))
+mittf <- rbind(mittf, thfive(colSums(mi2015)))
+mittf <- rbind(mittf, thfive(colSums(mi2016)))
+mittf <- as.data.frame(mittf)
+rownames(mittf) <- c(2009,2010,2011,2012,2013,2014,2015,2016)
+
+ggplot(mittf, aes(x=rownames(mittf), y=V1,group=1)) + geom_line() + theme_minimal()+ xlab("Year") + ylab("Proportion of rent burdened people") + ggtitle("People with rent of 35% or more as percentage of income in Miami")
+```
+```{r}
+mitf <- fhfive(colSums(mi2009))
+mitf <- rbind(mitf, fhfive(colSums(mi2010)))
+mitf <- rbind(mitf, fhfive(colSums(mi2011)))
+mitf <- rbind(mitf, fhfive(colSums(mi2012)))
+mitf <- rbind(mitf, fhfive(colSums(mi2013)))
+mitf <- rbind(mitf, fhfive(colSums(mi2014)))
+mitf <- rbind(mitf, fhfive(colSums(mi2015)))
+mitf <- rbind(mitf, fhfive(colSums(mi2016)))
+mitf <- as.data.frame(mitf)
+rownames(mitf) <- c(2009,2010,2011,2012,2013,2014,2015,2016)
+
+ggplot(mitf, aes(x=rownames(mitf), y=V1,group=1)) + geom_line() + theme_minimal()+ xlab("Year") + ylab("Proportion of rent burdened people") + ggtitle("People with rent of 50% or more as percentage of income in Miami")
+```
+
+```{r}
+huttf <- thfive(colSums(hu2009))
+huttf <- rbind(huttf, thfive(colSums(hu2010)))
+huttf <- rbind(huttf, thfive(colSums(hu2011)))
+huttf <- rbind(huttf, thfive(colSums(hu2012)))
+huttf <- rbind(huttf, thfive(colSums(hu2013)))
+huttf <- rbind(huttf, thfive(colSums(hu2014)))
+huttf <- rbind(huttf, thfive(colSums(hu2015)))
+huttf <- rbind(huttf, thfive(colSums(hu2016)))
+huttf <- as.data.frame(huttf)
+rownames(huttf) <- c(2009,2010,2011,2012,2013,2014,2015,2016)
+
+ggplot(huttf, aes(x=rownames(huttf), y=V1,group=1)) + geom_line() + theme_minimal()+ xlab("Year") + ylab("Proportion of rent burdened people") + ggtitle("People with rent of 35% or more as percentage of income in Houston")
+```
+```{r}
+hutf <- fhfive(colSums(hu2009))
+hutf <- rbind(hutf, fhfive(colSums(hu2010)))
+hutf <- rbind(hutf, fhfive(colSums(hu2011)))
+hutf <- rbind(hutf, fhfive(colSums(hu2012)))
+hutf <- rbind(hutf, fhfive(colSums(hu2013)))
+hutf <- rbind(hutf, fhfive(colSums(hu2014)))
+hutf <- rbind(hutf, fhfive(colSums(hu2015)))
+hutf <- rbind(hutf, fhfive(colSums(hu2016)))
+hutf <- as.data.frame(hutf)
+rownames(hutf) <- c(2009,2010,2011,2012,2013,2014,2015,2016)
+
+ggplot(hutf, aes(x=rownames(hutf), y=V1,group=1)) + geom_line() + theme_minimal()+ xlab("Year") + ylab("Proportion of rent burdened people") + ggtitle("People with rent of 50% or more as percentage of income in Houston")
+```
+
+```{r}
+sfttf <- thfive(colSums(sf2009))
+sfttf <- rbind(sfttf, thfive(colSums(sf2010)))
+sfttf <- rbind(sfttf, thfive(colSums(sf2011)))
+sfttf <- rbind(sfttf, thfive(colSums(sf2012)))
+sfttf <- rbind(sfttf, thfive(colSums(sf2013)))
+sfttf <- rbind(sfttf, thfive(colSums(sf2014)))
+sfttf <- rbind(sfttf, thfive(colSums(sf2015)))
+sfttf <- rbind(sfttf, thfive(colSums(sf2016)))
+sfttf <- as.data.frame(sfttf)
+rownames(sfttf) <- c(2009,2010,2011,2012,2013,2014,2015,2016)
+
+ggplot(sfttf, aes(x=rownames(sfttf), y=V1,group=1)) + geom_line() + theme_minimal()+ xlab("Year") + ylab("Proportion of rent burdened people") + ggtitle("People with rent of 35% or more as percentage of income in San Francisco")
+```
+```{r}
+sftf <- fhfive(colSums(sf2009))
+sftf <- rbind(sftf, fhfive(colSums(sf2010)))
+sftf <- rbind(sftf, fhfive(colSums(sf2011)))
+sftf <- rbind(sftf, fhfive(colSums(sf2012)))
+sftf <- rbind(sftf, fhfive(colSums(sf2013)))
+sftf <- rbind(sftf, fhfive(colSums(sf2014)))
+sftf <- rbind(sftf, fhfive(colSums(sf2015)))
+sftf <- rbind(sftf, fhfive(colSums(sf2016)))
+sftf <- as.data.frame(sftf)
+rownames(sftf) <- c(2009,2010,2011,2012,2013,2014,2015,2016)
+
+ggplot(sftf, aes(x=rownames(sftf), y=V1,group=1)) + geom_line() + theme_minimal()+ xlab("Year") + ylab("Proportion of rent burdened people") + ggtitle("People with rent of 50% or more as percentage of income in San Francisco")
+```
+
